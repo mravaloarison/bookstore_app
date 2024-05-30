@@ -3,96 +3,138 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
-interface BookInfoProps {
-	accessInfo?: any;
+import { searchBooks } from "@/app/functions/books";
+import LoadingBook from "@/components/homemade/loadingbook";
+
+interface BookRetrieved {
+	kind: string;
+	id: string;
+	etag: string;
 	volumeInfo: {
 		title: string;
 		authors: string[];
 		publisher: string;
 		publishedDate: string;
 		description: string;
+		categories: string[];
 		imageLinks?: {
-			thumbnail?: string;
 			smallThumbnail?: string;
+			thumbnail?: string;
 		};
-		categories?: string[];
-		averageRating?: number;
-		ratingsCount?: number;
 	};
 	saleInfo: {
-		listPrice: {
+		retailPrice: {
 			amount: number;
+			currencyCode: string;
 		};
 	};
 }
 
 export default function Home() {
 	const [searchValue, setSearchValue] = useState("");
+
 	const [loadingBooks, setLoadingBooks] = useState(false);
-	const searchAction = () => {
-		// Endpoints: https://www.googleapis.com/books/v1/volumes?q=
-
-		// Change all the spaces to a plus sign
-		// REGEX: /\s/g == " "
-
-		setLoadingBooks(true);
-
-		console.log("\nNew response\n");
-		const searchQuery = searchValue.replace(/\s/g, "+");
-		const request = `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}`;
-		fetch(request).then((response) => {
-			if (response.ok) {
-				response.json().then((data) => {
-					// console.log(data);
-					// parse ARRAY of books
-					const books = data.items;
-					books.forEach((Element: BookInfoProps) => {
-						console.log(Element.volumeInfo.title);
-						console.log(Element.volumeInfo.authors);
-						console.log(Element.volumeInfo.publisher);
-						console.log(Element.volumeInfo.publishedDate);
-						console.log(Element.volumeInfo.description);
-						console.log(Element.volumeInfo.imageLinks);
-						console.log(Element.volumeInfo.categories);
-						console.log(Element.volumeInfo.averageRating);
-						console.log(Element.volumeInfo.ratingsCount);
-						// console.log(Element.saleInfo.listPrice.amount);
-						console.log("\n\n");
-					});
-				});
-				setLoadingBooks(false);
-			}
-		});
-	};
+	const [books, setBooks] = useState<BookRetrieved[] | []>([]);
 
 	const userTyped = (value: string) => {
 		setSearchValue(value);
 	};
 
+	const findingBookTrigered = () => {
+		setLoadingBooks(true);
+
+		setBooks([]);
+
+		const formattedSearchValue = searchValue.replace(/\s/g, "+");
+
+		searchBooks(formattedSearchValue).then((books) => {
+			if (books) {
+				for (const book of books) {
+					setBooks(
+						(prevBooks) => [...prevBooks, book] as BookRetrieved[]
+					);
+				}
+			}
+			setLoadingBooks(false);
+		});
+	};
+
 	return (
-		<main>
-			<section className="min-h-screen flex justify-center items-center">
-				<div className="flex w-full max-w-sm items-center space-x-2">
+		<div className="flex flex-col gap-2 lg:gap-4 max-w-7xl mx-auto w-full py-4">
+			{/* SEARCH SECTION */}
+			<section className="w-full flex">
+				<div className="flex w-full max-w-lg items-center space-x-4 p-4">
 					<Input
 						type="search"
 						value={searchValue}
 						placeholder="Search"
 						onChange={(event) => userTyped(event.target.value)}
 					/>
-					<Button onClick={searchAction}>
+					<Button onClick={findingBookTrigered}>
 						{loadingBooks ? (
 							<>
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								Searching ...
+								<Loader className="h-5 w-5 animate-spin" />
 							</>
 						) : (
-							"Search"
+							"Find a Book"
 						)}
 					</Button>
 				</div>
 			</section>
-		</main>
+
+			{/* WAS SEARCH MADE ALREADY ? */}
+			{books.length === 0 && !loadingBooks && (
+				<section className="w-full h-full px-4">
+					<div className="grid grid-cols-2 lg:grid-cols-7 gap-4">
+						{Array.from({ length: 20 }).map((_, index) => (
+							<LoadingBook key={index} />
+						))}
+					</div>
+				</section>
+			)}
+
+			{/* SEARCH WAS MADE */}
+			{loadingBooks ? (
+				<section className="w-full h-full px-4">
+					<div className="grid grid-cols-2 lg:grid-cols-7 gap-4">
+						{Array.from({ length: 20 }).map((_, index) => (
+							<LoadingBook key={index} />
+						))}
+					</div>
+				</section>
+			) : (
+				<section className="w-full h-full">
+					<div className="grid grid-cols-2 lg:grid-cols-7 gap-2">
+						{books.map((book) => (
+							<Button
+								variant="link"
+								key={book.id}
+								className="w-full h-full flex flex-col gap-2 items-start"
+							>
+								<img
+									className="h-40 w-full rounded"
+									src={book.volumeInfo.imageLinks?.thumbnail}
+								/>
+								<p className="overflow-hidden truncate font-bold w-full text-start">
+									{book.volumeInfo.title}
+								</p>
+								<div className="text-start text-xs w-full flex flex-col gap-1">
+									<p className="text-slate-400 truncate overflow-hidden">
+										by {book.volumeInfo.authors}
+									</p>
+									<p className="text-yellow-600 truncate overflow-hidden">
+										{book.saleInfo.retailPrice
+											? `$${book.saleInfo.retailPrice.amount}`
+											: "Not for sale"}
+									</p>
+								</div>
+							</Button>
+						))}
+					</div>
+				</section>
+			)}
+		</div>
 	);
 }

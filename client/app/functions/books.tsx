@@ -1,32 +1,35 @@
-interface BookInfoProps {
-	accessInfo?: any;
+interface Book {
+	kind: string;
+	id: string;
+	etag: string;
 	volumeInfo: {
 		title: string;
 		authors: string[];
 		publisher: string;
 		publishedDate: string;
 		description: string;
+		categories: string[];
 		imageLinks?: {
-			thumbnail?: string;
 			smallThumbnail?: string;
+			thumbnail?: string;
 		};
-		categories?: string[];
-		averageRating?: number;
-		ratingsCount?: number;
+	};
+	safeInfo: {
+		listPrice: {
+			amount: number;
+		};
 	};
 }
 
-export const extract_book_info = async (book: BookInfoProps) => {
-	const book_info = {
-		title: book.volumeInfo.title,
-		authors: book.volumeInfo.authors,
-		publisher: book.volumeInfo.publisher,
-		publishedDate: book.volumeInfo.publishedDate,
-		description: book.volumeInfo.description,
-		imageLinks: book.volumeInfo.imageLinks,
-		categories: book.volumeInfo.categories,
-		averageRating: book.volumeInfo.averageRating,
-		ratingsCount: book.volumeInfo.ratingsCount,
-	};
-	return book_info;
-};
+export function searchBooks(searchValue: string) {
+	const searchQuery = searchValue.replace(/\s/g, "+");
+	const request = `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=20`;
+	return fetch(request).then((response) => {
+		if (response.ok) {
+			return response.json().then((data) => {
+				const books: Book[] = data.items;
+				return books;
+			});
+		}
+	});
+}
