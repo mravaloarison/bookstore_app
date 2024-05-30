@@ -3,7 +3,7 @@ export default function Footer() {
 		<footer>
 			<div>
 				<p className="text-xs text-slate-300 text-center p-4">
-					© 2024 By Dave's Team
+					By Dave's Team
 				</p>
 			</div>
 		</footer>
