@@ -43,6 +43,7 @@ export default function Home() {
 	};
 
 	const findingBookTrigered = () => {
+		alert(searchValue);
 		setLoadingBooks(true);
 
 		setBooks([]);
@@ -60,6 +61,10 @@ export default function Home() {
 			setLoadingBooks(false);
 		});
 	};
+
+	function openThisBook() {
+		alert("Book was clicked");
+	}
 
 	return (
 		<div className="flex flex-col gap-2 lg:gap-4 max-w-7xl mx-auto w-full py-4">
@@ -109,6 +114,7 @@ export default function Home() {
 					<div className="grid grid-cols-2 lg:grid-cols-7 gap-2">
 						{books.map((book) => (
 							<Button
+								onClick={openThisBook}
 								variant="link"
 								key={book.id}
 								className="w-full h-full flex flex-col gap-2 items-start"
@@ -127,7 +133,7 @@ export default function Home() {
 									<p className="text-yellow-600 truncate overflow-hidden">
 										{book.saleInfo.retailPrice
 											? `$${book.saleInfo.retailPrice.amount}`
-											: "Not for sale"}
+											: "Out of stock"}
 									</p>
 								</div>
 							</Button>

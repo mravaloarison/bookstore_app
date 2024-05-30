@@ -1,0 +1,40 @@
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
+const firebaseConfig = {
+	apiKey: "AIzaSyBdG1pse58xuZBGr_NZzq_KT08TiFWdeRs",
+	authDomain: "bookstore-27877.firebaseapp.com",
+	projectId: "bookstore-27877",
+	storageBucket: "bookstore-27877.appspot.com",
+	messagingSenderId: "621257385604",
+	appId: "1:621257385604:web:274bf23723f1059abf44d1",
+};
+
+const app = initializeApp(firebaseConfig);
+
+const provider = new GoogleAuthProvider();
+const auth = getAuth(app);
+
+
+export const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            const user = result.user;
+            sessionStorage.setItem('user', user.displayName?);
+            
+            // reload the page
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+}
+
+export const signOut = () => {
+    sessionStorage.removeItem('user');
+    auth.signOut();
+
+    // reload the page
+    window.location.reload();
+}
