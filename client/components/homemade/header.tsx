@@ -18,15 +18,17 @@ export default function Header() {
 			</h1>
 
 			<div className="flex gap-8 items-center">
-				<a href="/">Books</a>
-				<a href="/community">Community</a>
-				<a
-					href="/ai_search"
-					className="text-blue-600 flex justify-center items-center gap-2"
-				>
-					<Sparkles size={16} />
-					Ask AI
-				</a>
+				<div className="hidden">
+					<a href="/">Books</a>
+					<a href="/community">Community</a>
+					<a
+						href="/ai_search"
+						className="text-blue-600 flex justify-center items-center gap-2"
+					>
+						<Sparkles size={16} />
+						Ask AI
+					</a>
+				</div>
 				{isUserSignedIn ? (
 					<Button onClick={() => setIsUserSignedIn(false)}>
 						Sign Out
