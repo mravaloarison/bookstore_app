@@ -1,11 +1,4 @@
-import {
-	GroupIcon,
-	Heart,
-	ShoppingCart,
-	Star,
-	StarIcon,
-	Users,
-} from "lucide-react";
+import { Heart, ShoppingCart, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { DrawerDescription, DrawerHeader } from "../ui/drawer";
 
