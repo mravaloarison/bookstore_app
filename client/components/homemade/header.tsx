@@ -1,14 +1,22 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { Loader, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
+import { signInWithGoogle } from "@/app/functions/authentication";
 
 export default function Header() {
 	const [isUserSignedIn, setIsUserSignedIn] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	function signUserInWithGoogle() {
-		setIsUserSignedIn(true);
+		setIsLoading(true);
+
+		signInWithGoogle();
+
+		if (sessionStorage.getItem("user")) {
+			setIsLoading(false);
+		}
 	}
 
 	return (
@@ -35,7 +43,11 @@ export default function Header() {
 					</Button>
 				) : (
 					<Button variant="secondary" onClick={signUserInWithGoogle}>
-						Sign in with Google
+						{isLoading ? (
+							<Loader className="w-6 h-6" />
+						) : (
+							"Sign in with Google"
+						)}
 					</Button>
 				)}
 			</div>

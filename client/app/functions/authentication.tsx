@@ -15,26 +15,23 @@ const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 const auth = getAuth(app);
 
-
 export const signInWithGoogle = () => {
-    signInWithPopup(auth, provider)
-        .then((result) => {
-            const user = result.user;
-            sessionStorage.setItem('user', user.displayName?);
-            
-            // reload the page
-            window.location.reload();
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+	signInWithPopup(auth, provider)
+		.then((result) => {
+			const user = result.user;
+			user.displayName &&
+				sessionStorage.setItem("user", user.displayName);
 
-}
+			window.location.reload();
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+};
 
 export const signOut = () => {
-    sessionStorage.removeItem('user');
-    auth.signOut();
+	sessionStorage.removeItem("user");
+	auth.signOut();
 
-    // reload the page
-    window.location.reload();
-}
+	window.location.reload();
+};
