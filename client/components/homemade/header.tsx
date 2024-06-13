@@ -4,6 +4,7 @@ import { Loader, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { signInWithGoogle } from "@/app/functions/authentication";
+import SignedInIcon from "./signed_in_icon";
 
 export default function Header() {
 	const [isUserSignedIn, setIsUserSignedIn] = useState(false);
@@ -15,7 +16,10 @@ export default function Header() {
 		signInWithGoogle();
 
 		if (sessionStorage.getItem("user")) {
+			setIsUserSignedIn(true);
 			setIsLoading(false);
+
+			// window.location.reload();
 		}
 	}
 
@@ -38,9 +42,9 @@ export default function Header() {
 					</a>
 				</div>
 				{isUserSignedIn ? (
-					<Button onClick={() => setIsUserSignedIn(false)}>
-						Sign Out
-					</Button>
+					<div>
+						<SignedInIcon />
+					</div>
 				) : (
 					<Button variant="secondary" onClick={signUserInWithGoogle}>
 						{isLoading ? (
