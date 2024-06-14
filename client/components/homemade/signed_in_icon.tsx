@@ -21,22 +21,22 @@ const menuItems = [
 	{
 		icon: Heart,
 		text: "My Favorites",
-		path: "/favorites",
+		path: "favorites",
 	},
 	{
 		icon: Users,
 		text: "Community",
-		path: "/community",
+		path: "community",
 	},
 	{
 		icon: MessageSquareWarning,
 		text: "Reports",
-		path: "/reports",
+		path: "reports",
 	},
 	{
 		icon: ShoppingCart,
 		text: "Purchase History",
-		path: "/purchase",
+		path: "purchase",
 	},
 ];
 
