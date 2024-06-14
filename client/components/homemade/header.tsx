@@ -42,7 +42,7 @@ export default function Header() {
 					</a>
 				</div>
 				{isUserSignedIn ? (
-					<div>
+					<div className="flex bg-muted/40">
 						<SignedInIcon />
 					</div>
 				) : (
