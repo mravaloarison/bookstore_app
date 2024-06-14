@@ -7,7 +7,6 @@ import { signInWithGoogle } from "@/app/functions/authentication";
 import SignedInIcon from "./signed_in_icon";
 
 export default function Header() {
-	const [isUserSignedIn, setIsUserSignedIn] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	function signUserInWithGoogle() {
@@ -16,10 +15,7 @@ export default function Header() {
 		signInWithGoogle();
 
 		if (sessionStorage.getItem("user")) {
-			setIsUserSignedIn(true);
 			setIsLoading(false);
-
-			// window.location.reload();
 		}
 	}
 
@@ -41,7 +37,7 @@ export default function Header() {
 						Ask AI
 					</a>
 				</div>
-				{isUserSignedIn ? (
+				{sessionStorage.getItem("user") !== null ? (
 					<div className="flex bg-muted/40">
 						<SignedInIcon />
 					</div>

@@ -21,6 +21,7 @@ export const signInWithGoogle = () => {
 			const user = result.user;
 			user.displayName &&
 				sessionStorage.setItem("user", user.displayName);
+			window.location.reload();
 		})
 		.catch((error) => {
 			console.log(error);

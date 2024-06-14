@@ -21,18 +21,22 @@ const menuItems = [
 	{
 		icon: Heart,
 		text: "My Favorites",
+		path: "/favorites",
 	},
 	{
 		icon: Users,
 		text: "Community",
+		path: "/community",
 	},
 	{
 		icon: MessageSquareWarning,
 		text: "Reports",
+		path: "/reports",
 	},
 	{
 		icon: ShoppingCart,
 		text: "Purchase History",
+		path: "/purchase",
 	},
 ];
 
@@ -59,6 +63,9 @@ export default function SignedInIcon() {
 					<DropdownMenuItem
 						key={index}
 						className="hover:cursor-pointer"
+						onClick={() => {
+							window.location.replace(item.path);
+						}}
 					>
 						<item.icon className="w-4 h-4 mr-2" />
 						{item.text}
