@@ -74,7 +74,7 @@ export default function Home() {
 	};
 
 	return (
-		<div className="flex flex-col gap-2 lg:gap-4 max-w-7xl mx-auto w-full py-4">
+		<div className="flex flex-col gap-2 lg:gap-4 max-w-7xl mx-auto w-full lg:py-4">
 			<section className="w-full flex">
 				<div className="flex w-full max-w-lg mx-auto items-center space-x-4 p-4">
 					<Input
