@@ -26,11 +26,31 @@ interface Book {
 	};
 }
 
-const JoinCommunity = (bookId: string) => {
-	console.log("Joining community for book", bookId);
-};
-
 export default function BookDetails({ book }: { book: Book }) {
+	const userNotSignedIn = sessionStorage.getItem("user") === null;
+
+	const IsUserLoggedIn = () => {
+		if (userNotSignedIn) {
+			alert("Please sign in to join the community");
+			return;
+		}
+	};
+
+	const JoinCommunity = (bookId: string) => {
+		IsUserLoggedIn();
+		console.log("Joining community for book", bookId);
+	};
+
+	const AddToFavorite = (bookId: string) => {
+		IsUserLoggedIn();
+		console.log("Adding book to favorite", bookId);
+	};
+
+	const BuyBook = (bookId: string) => {
+		IsUserLoggedIn();
+		console.log("Buying book", bookId);
+	};
+
 	return (
 		<div>
 			<DrawerHeader>
@@ -46,27 +66,43 @@ export default function BookDetails({ book }: { book: Book }) {
 						alt={book.volumeInfo.title}
 					/>
 					<Button
+						variant={userNotSignedIn ? "outline" : "default"}
 						onClick={() => JoinCommunity(book.id)}
 						className="flex gap-4 w-full"
 					>
 						<Users className="w-5 h-5" />
-						Join community
+						<p className={userNotSignedIn ? "line-through" : ""}>
+							Join community
+						</p>
 					</Button>
-					<Button variant="secondary" className="flex gap-4 w-full">
+					<Button
+						variant={userNotSignedIn ? "outline" : "secondary"}
+						onClick={() => AddToFavorite(book.id)}
+						className="flex gap-4 w-full"
+					>
 						<Heart className="w-5 h-5" />
-						Add to favorite
+						<p className={userNotSignedIn ? "line-through" : ""}>
+							Add to favorite
+						</p>
 					</Button>
 					{book.saleInfo.retailPrice ? (
 						<Button
-							variant="secondary"
+							variant={userNotSignedIn ? "outline" : "secondary"}
+							onClick={() => BuyBook(book.id)}
 							className="flex gap-4 w-full"
 						>
 							<ShoppingCart className="w-5 h-5" />
-							Buy{" "}
-							<>
-								{book.saleInfo.retailPrice.amount}{" "}
-								{book.saleInfo.retailPrice.currencyCode}
-							</>
+							<p
+								className={
+									userNotSignedIn ? "line-through" : ""
+								}
+							>
+								Buy{" "}
+								<>
+									{book.saleInfo.retailPrice.amount}{" "}
+									{book.saleInfo.retailPrice.currencyCode}
+								</>
+							</p>
 						</Button>
 					) : (
 						""
@@ -75,7 +111,7 @@ export default function BookDetails({ book }: { book: Book }) {
 				<div className="w-full flex flex-col gap-4 px-4">
 					<p>
 						<strong>Authors:</strong>{" "}
-						{book.volumeInfo.authors.join(", ")}
+						{book.volumeInfo.authors?.join(", ")}
 					</p>
 					<p>
 						<strong>Publisher:</strong> {book.volumeInfo.publisher}
@@ -86,7 +122,7 @@ export default function BookDetails({ book }: { book: Book }) {
 					</p>
 					<p>
 						<strong>Categories:</strong>{" "}
-						{book.volumeInfo.categories.join(", ")}
+						{book.volumeInfo.categories?.join(", ")}
 					</p>
 					<p className="truncate md:text-wrap">
 						<strong>Description:</strong>{" "}
