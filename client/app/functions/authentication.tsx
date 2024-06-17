@@ -10,18 +10,21 @@ const firebaseConfig = {
 	appId: "1:621257385604:web:274bf23723f1059abf44d1",
 };
 
+interface SignInCallback {
+	(error?: Error): void;
+}
 const app = initializeApp(firebaseConfig);
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth(app);
 
-export const signInWithGoogle = () => {
+export const signInWithGoogle = (callback: SignInCallback) => {
 	signInWithPopup(auth, provider)
 		.then((result) => {
 			const user = result.user;
 			user.displayName &&
 				sessionStorage.setItem("user", user.displayName);
-			window.location.reload();
+			callback();
 		})
 		.catch((error) => {
 			console.log(error);

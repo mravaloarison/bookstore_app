@@ -1,19 +1,22 @@
 "use client";
 
-import { Loader, Sparkles } from "lucide-react";
+import { Loader } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { signInWithGoogle } from "@/app/functions/authentication";
 import SignedInIcon from "./signed_in_icon";
+import { useEffect } from "react";
 
 export default function Header() {
 	const [isLoading, setIsLoading] = useState(false);
-	const isLoggedIn = sessionStorage.getItem("user") !== null;
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	function signUserInWithGoogle() {
 		setIsLoading(true);
 
-		signInWithGoogle();
+		signInWithGoogle(() => {
+			setIsLoggedIn(true);
+		});
 
 		if (sessionStorage.getItem("user")) {
 			setIsLoading(false);
@@ -27,17 +30,6 @@ export default function Header() {
 			</h1>
 
 			<div className="flex gap-8 items-center">
-				<div className="hidden">
-					<a href="/">Books</a>
-					<a href="/community">Community</a>
-					<a
-						href="/ai_search"
-						className="text-blue-600 flex justify-center items-center gap-2"
-					>
-						<Sparkles size={16} />
-						Ask AI
-					</a>
-				</div>
 				{isLoggedIn ? (
 					<div className="flex bg-muted/40">
 						<SignedInIcon />
@@ -45,7 +37,7 @@ export default function Header() {
 				) : (
 					<Button variant="secondary" onClick={signUserInWithGoogle}>
 						{isLoading ? (
-							<Loader className="w-6 h-6" />
+							<Loader className="w-6 h-6 animate-spin" />
 						) : (
 							"Sign in with Google"
 						)}

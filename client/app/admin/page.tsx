@@ -9,9 +9,7 @@ export default function Admin() {
 				<Card className="min-w-96">
 					<CardHeader>
 						<CardTitle>
-							<h1 className="text-center font-mono">
-								Admin Page
-							</h1>
+							<p className="text-center font-mono">Admin Page</p>
 						</CardTitle>
 						<form className="flex flex-col gap-5 pt-4">
 							<div className="text-sm flex flex-col gap-2">
