@@ -55,6 +55,7 @@ export default function Membership() {
 			<div className="md:grid md:grid-cols-2 md:gap-8 flex flex-col gap-4">
 				{plans.map((plan) => (
 					<MembershipCard
+						key={plan.name}
 						isActive={plan.active}
 						handleClick={plan.callMeOnClick}
 						plan={plan}
