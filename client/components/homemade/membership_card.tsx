@@ -72,7 +72,7 @@ export default function MembershipCard({
 			<CardFooter
 				className={`${
 					plan.name === "Pro" ? "text-indigo-500" : "text-slate-500"
-				} "text-xl font-semibold"`}
+				} font-mono text-xl font-semibold`}
 			>
 				{plan.price}
 			</CardFooter>
