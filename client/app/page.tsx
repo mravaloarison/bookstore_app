@@ -64,6 +64,15 @@ export default function Home() {
 		});
 	};
 
+	const DrawerComponent = ({ trigger, content }: any) => {
+		return (
+			<Drawer>
+				<DrawerTrigger>{trigger}</DrawerTrigger>
+				<DrawerContent>{content}</DrawerContent>
+			</Drawer>
+		);
+	};
+
 	return (
 		<div className="flex flex-col gap-2 lg:gap-4 max-w-7xl mx-auto w-full py-4">
 			<section className="w-full flex">
@@ -87,12 +96,10 @@ export default function Home() {
 			</section>
 
 			{books.length === 0 && !loadingBooks && (
-				<section className="w-full h-full px-4">
-					<div className="grid grid-cols-2 lg:grid-cols-7 gap-4">
-						{Array.from({ length: 20 }).map((_, index) => (
-							<LoadingBook key={index} />
-						))}
-					</div>
+				<section className="w-full h-[30rem] md:h-[34rem] px-4">
+					<p className="text-slate-300 text-sm font-semibold">
+						- Search for a book ...
+					</p>
 				</section>
 			)}
 
@@ -108,15 +115,11 @@ export default function Home() {
 				<section className="w-full h-full">
 					<div className="grid grid-cols-2 lg:grid-cols-7 gap-4 px-4">
 						{books.map((book, index) => (
-							<Drawer key={index}>
-								<DrawerTrigger>
-									<LoadedBook book={book} />
-								</DrawerTrigger>
-
-								<DrawerContent>
-									<BookDetails book={book} />
-								</DrawerContent>
-							</Drawer>
+							<DrawerComponent
+								key={index}
+								trigger={<LoadedBook book={book} />}
+								content={<BookDetails book={book} />}
+							/>
 						))}
 					</div>
 				</section>

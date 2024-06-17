@@ -5,7 +5,6 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { signInWithGoogle } from "@/app/functions/authentication";
 import SignedInIcon from "./signed_in_icon";
-import { useEffect } from "react";
 
 export default function Header() {
 	const [isLoading, setIsLoading] = useState(false);

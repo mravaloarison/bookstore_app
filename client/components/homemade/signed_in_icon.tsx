@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import {
 	CircleUser,
 	Heart,
+	Home,
 	LogOut,
 	MessageSquareWarning,
 	ShoppingCart,
@@ -26,6 +27,12 @@ export default function SignedInIcon() {
 	const pathname = usePathname();
 
 	const menuItems = [
+		{
+			icon: Home,
+			text: "Home",
+			path: "/",
+			isActive: pathname === "/",
+		},
 		{
 			icon: Heart,
 			text: "My Favorites",
