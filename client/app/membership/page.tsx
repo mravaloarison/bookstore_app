@@ -2,7 +2,7 @@
 
 import MembershipCard from "@/components/homemade/membership_card";
 import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
+import { Loader, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
 	addProMembers,
@@ -14,14 +14,18 @@ import { toast } from "sonner";
 export default function Membership() {
 	const [isPro, setIsPro] = useState(false);
 	const [isClassic, setIsClassic] = useState(true);
-	let activePlan = "Classic";
+	const [activePlan, setActivePlan] = useState("");
+	const [loadingChanges, setLoadingChanges] = useState(false);
 
 	useEffect(() => {
-		console.log(isProMember(sessionStorage.getItem("user")));
-		activePlan = isProMember(sessionStorage.getItem("user"))
-			? "Pro"
-			: "Classic";
-	});
+		const username = sessionStorage.getItem("user");
+
+		isProMember(username).then((isProMemberResult) => {
+			setIsPro(isProMemberResult);
+			setIsClassic(!isProMemberResult);
+			setActivePlan(isProMemberResult ? "Pro" : "Classic");
+		});
+	}, []);
 
 	const handleClassicClick = () => {
 		setIsPro(false);
@@ -31,6 +35,36 @@ export default function Membership() {
 	const handleProClick = () => {
 		setIsPro(true);
 		setIsClassic(false);
+	};
+
+	const handleSaveChanges = () => {
+		setLoadingChanges(true);
+		const username = sessionStorage.getItem("user");
+
+		const promise = () =>
+			new Promise((resolve) =>
+				setTimeout(() => {
+					isPro
+						? addProMembers(username)
+						: deleteProMembers(username);
+					resolve({
+						msg: "Plan successfully updated!",
+					});
+				}, 1000)
+			);
+
+		toast.promise(promise, {
+			loading: "Upgrading...",
+			success: (data: any) => {
+				setLoadingChanges(false);
+				return data.msg;
+			},
+			error: "Error upgrading to Pro membership",
+		});
+
+		setTimeout(() => {
+			window.location.reload();
+		}, 2000);
 	};
 
 	const plans = [
@@ -56,27 +90,7 @@ export default function Membership() {
 		},
 	];
 
-	const handleSaveChanges = () => {
-		const promise = () =>
-			new Promise((resolve) =>
-				setTimeout(() => {
-					isPro
-						? addProMembers(sessionStorage.getItem("user"))
-						: deleteProMembers(sessionStorage.getItem("user"));
-					resolve({ msg: "Your plan has been updated" });
-				}, 2000)
-			);
-
-		toast.promise(promise, {
-			loading: "Loading...",
-			success: (data: any) => {
-				return data.msg;
-			},
-			error: "Error",
-		});
-	};
-
-	return (
+	return activePlan !== "" ? (
 		<div className="flex flex-col gap-8 w-full h-full items-center py-8">
 			<h1 className="text-center text-xl flex gap-2">
 				Active Plan: <span className="font-bold">{activePlan}</span>
@@ -94,10 +108,18 @@ export default function Membership() {
 			</div>
 			<div className="flex justify-center items-center">
 				<Button variant="outline" onClick={handleSaveChanges}>
-					<Save className="w-5 h-5 mr-2" />
+					{loadingChanges ? (
+						<Loader className="w-5 h-5 mr-2 animate-spin" />
+					) : (
+						<Save className="w-5 h-5 mr-2" />
+					)}
 					Save changes
 				</Button>
 			</div>
+		</div>
+	) : (
+		<div className="flex justify-center gap-8 w-full h-full items-center py-8">
+			<Loader className="w-10 h-10 animate-spin" />
 		</div>
 	);
 }

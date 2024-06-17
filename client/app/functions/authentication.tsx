@@ -125,14 +125,18 @@ export const deleteProMembers = (username: string | null) => {
 	});
 };
 
-export const isProMember = (username: string | null) => {
-	getDocs(collection(db, "proMembers")).then((querySnapshot) => {
-		querySnapshot.forEach((doc) => {
-			if (doc.data().userName === username) {
-				return true;
-			}
-		});
+export function isProMember(username: string | null): Promise<boolean> {
+	return new Promise((resolve, reject) => {
+		getDocs(collection(db, "proMembers"))
+			.then((querySnapshot) => {
+				const isPro = querySnapshot.docs.some(
+					(doc) => doc.data().userName === username
+				);
+				resolve(isPro);
+			})
+			.catch((error) => {
+				console.error("Error checking pro member status:", error);
+				reject(false);
+			});
 	});
-
-	return false;
-};
+}
