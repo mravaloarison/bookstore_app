@@ -45,7 +45,15 @@ export default function MembershipCard({
                 `}
 		>
 			<CardHeader>
-				<CardTitle className="text-slate-500">{plan.name}</CardTitle>
+				<CardTitle
+					className={`${
+						plan.name === "Pro"
+							? "text-indigo-500"
+							: "text-slate-500"
+					}`}
+				>
+					{plan.name}
+				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<ul className="flex flex-col gap-2">
@@ -61,7 +69,11 @@ export default function MembershipCard({
 					))}
 				</ul>
 			</CardContent>
-			<CardFooter className="text-xl font-semibold text-slate-500">
+			<CardFooter
+				className={`${
+					plan.name === "Pro" ? "text-indigo-500" : "text-slate-500"
+				} "text-xl font-semibold"`}
+			>
 				{plan.price}
 			</CardFooter>
 		</Card>
