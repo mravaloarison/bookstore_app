@@ -76,7 +76,7 @@ export default function Home() {
 	return (
 		<div className="flex flex-col gap-2 lg:gap-4 max-w-7xl mx-auto w-full py-4">
 			<section className="w-full flex">
-				<div className="flex w-full max-w-lg items-center space-x-4 p-4">
+				<div className="flex w-full max-w-lg mx-auto items-center space-x-4 p-4">
 					<Input
 						type="search"
 						value={searchValue}
@@ -97,8 +97,8 @@ export default function Home() {
 
 			{books.length === 0 && !loadingBooks && (
 				<section className="w-full h-[30rem] md:h-[34rem] px-4">
-					<p className="text-slate-300 text-sm font-semibold">
-						- Search for a book ...
+					<p className="text-slate-300 text-sm text-center">
+						Search for a book to get started
 					</p>
 				</section>
 			)}

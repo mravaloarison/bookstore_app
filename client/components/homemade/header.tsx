@@ -30,7 +30,7 @@ export default function Header() {
 
 	return (
 		<header className="p-4 flex w-full justify-between items-center border-b">
-			<h1 className="text-2xl font-extrabold font- text-slate-400">
+			<h1 className="text-2xl font-extrabold font- text-indigo-500">
 				<span className="text-slate-900">Book</span>Bridge
 			</h1>
 
