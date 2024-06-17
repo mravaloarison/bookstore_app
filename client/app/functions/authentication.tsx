@@ -1,6 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, addDoc, collection, getDocs } from "firebase/firestore";
+import {
+	getFirestore,
+	addDoc,
+	collection,
+	getDocs,
+	deleteDoc,
+} from "firebase/firestore";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyBdG1pse58xuZBGr_NZzq_KT08TiFWdeRs",
@@ -18,6 +24,28 @@ const auth = getAuth(app);
 
 interface SignInCallback {
 	(error?: Error): void;
+}
+
+function getFormattedJoinedAt(): string {
+	const now = new Date();
+
+	const joinedAt = new Date(now.getTime());
+
+	const options: Intl.DateTimeFormatOptions = {
+		year: "numeric" as const,
+		month: "long" as const,
+		day: "numeric" as const,
+		hour: "numeric" as const,
+		minute: "2-digit" as const,
+		hour12: true,
+	};
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		...options,
+		timeZone: "America/New_York",
+	});
+	const formattedDateTime = formatter.format(joinedAt);
+
+	return formattedDateTime;
 }
 
 export const signInWithGoogle = (callback: SignInCallback) => {
@@ -67,13 +95,12 @@ export const addingUser = (username: string | null, uid: string) => {
 	});
 };
 
-export const addProMembers = (username: string | null, uid: string) => {
+export const addProMembers = (username: string | null) => {
 	getDocs(collection(db, "proMembers")).then((querySnapshot) => {
 		let userExists = false;
 
-		// look if user exists already in users/userId
 		querySnapshot.forEach((doc) => {
-			if (doc.data().userId === uid) {
+			if (doc.data().userName === username) {
 				userExists = true;
 				return;
 			}
@@ -81,13 +108,31 @@ export const addProMembers = (username: string | null, uid: string) => {
 
 		if (!userExists) {
 			addDoc(collection(db, "proMembers"), {
-				userId: uid,
 				userName: username,
-				joinedAt: (
-					new Date().getTime() -
-					new Date().getTimezoneOffset() * 60000
-				).toString(),
+				joinedAt: getFormattedJoinedAt(),
 			});
 		}
 	});
+};
+
+export const deleteProMembers = (username: string | null) => {
+	getDocs(collection(db, "proMembers")).then((querySnapshot) => {
+		querySnapshot.forEach((doc) => {
+			if (doc.data().userName === username) {
+				deleteDoc(doc.ref);
+			}
+		});
+	});
+};
+
+export const isProMember = (username: string | null) => {
+	getDocs(collection(db, "proMembers")).then((querySnapshot) => {
+		querySnapshot.forEach((doc) => {
+			if (doc.data().userName === username) {
+				return true;
+			}
+		});
+	});
+
+	return false;
 };
