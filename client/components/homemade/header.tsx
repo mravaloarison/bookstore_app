@@ -2,13 +2,19 @@
 
 import { Loader } from "lucide-react";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signInWithGoogle } from "@/app/functions/authentication";
 import SignedInIcon from "./signed_in_icon";
 
 export default function Header() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	useEffect(() => {
+		if (sessionStorage.getItem("user")) {
+			setIsLoggedIn(true);
+		}
+	});
 
 	function signUserInWithGoogle() {
 		setIsLoading(true);

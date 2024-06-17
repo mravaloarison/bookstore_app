@@ -9,53 +9,57 @@ import {
 import { Button } from "../ui/button";
 import {
 	CircleUser,
+	Crown,
 	Heart,
 	Home,
 	LogOut,
 	MessageSquareWarning,
 	ShoppingCart,
+	Sparkles,
 	Users,
 } from "lucide-react";
 import { signOut } from "@/app/functions/authentication";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 export default function SignedInIcon() {
 	const [user, setUser] = useState("");
-
-	const pathname = usePathname();
 
 	const menuItems = [
 		{
 			icon: Home,
 			text: "Home",
 			path: "/",
-			isActive: pathname === "/",
 		},
 		{
 			icon: Heart,
 			text: "My Favorites",
 			path: "favorites",
-			isActive: pathname.includes("favorites"),
-		},
-		{
-			icon: Users,
-			text: "Community",
-			path: "community",
-			isActive: pathname.includes("community"),
-		},
-		{
-			icon: MessageSquareWarning,
-			text: "Reports",
-			path: "reports",
-			isActive: pathname.includes("reports"),
 		},
 		{
 			icon: ShoppingCart,
 			text: "Purchase History",
 			path: "purchase",
-			isActive: pathname.includes("purchase"),
+		},
+		{
+			icon: Users,
+			text: "Community",
+			path: "community",
+		},
+		{
+			icon: Sparkles,
+			text: "Ask AI",
+			path: "ai_recommendations",
+		},
+		{
+			icon: MessageSquareWarning,
+			text: "Reports",
+			path: "reports",
+		},
+		{
+			icon: Crown,
+			text: "Membership",
+			path: "membership",
 		},
 	];
 

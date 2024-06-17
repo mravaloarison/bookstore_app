@@ -1,6 +1,7 @@
 import { Heart, ShoppingCart, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { DrawerDescription, DrawerHeader } from "../ui/drawer";
+import { toast } from "sonner";
 
 interface Book {
 	kind: string;
@@ -31,7 +32,7 @@ export default function BookDetails({ book }: { book: Book }) {
 
 	const IsUserLoggedIn = () => {
 		if (userNotSignedIn) {
-			alert("Please sign in to join the community");
+			toast.warning("Please sign in to access this feature.");
 			return;
 		}
 	};

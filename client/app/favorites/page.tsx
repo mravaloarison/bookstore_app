@@ -1,7 +1,9 @@
+import PleaseUpgrade from "@/components/homemade/please_upgrade";
+
 export default function FavoritesPage() {
 	return (
-		<div>
-			<h1>Favorites</h1>
-		</div>
+		<>
+			<PleaseUpgrade />
+		</>
 	);
 }

@@ -66,3 +66,28 @@ export const addingUser = (username: string | null, uid: string) => {
 		}
 	});
 };
+
+export const addProMembers = (username: string | null, uid: string) => {
+	getDocs(collection(db, "proMembers")).then((querySnapshot) => {
+		let userExists = false;
+
+		// look if user exists already in users/userId
+		querySnapshot.forEach((doc) => {
+			if (doc.data().userId === uid) {
+				userExists = true;
+				return;
+			}
+		});
+
+		if (!userExists) {
+			addDoc(collection(db, "proMembers"), {
+				userId: uid,
+				userName: username,
+				joinedAt: (
+					new Date().getTime() -
+					new Date().getTimezoneOffset() * 60000
+				).toString(),
+			});
+		}
+	});
+};
