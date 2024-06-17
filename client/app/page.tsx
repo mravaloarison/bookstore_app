@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Loader } from "lucide-react";
+import { Loader, Search } from "lucide-react";
 
 import { searchBooks } from "@/app/functions/books";
 import LoadingBook from "@/components/homemade/loadingbook";
@@ -83,13 +83,13 @@ export default function Home() {
 						placeholder="Search"
 						onChange={(event) => userTyped(event.target.value)}
 					/>
-					<Button onClick={findingBookTrigered}>
+					<Button onClick={findingBookTrigered} variant="secondary">
 						{loadingBooks ? (
 							<>
 								<Loader className="h-5 w-5 animate-spin" />
 							</>
 						) : (
-							"Find a Book"
+							<Search className="h-5 w-5" />
 						)}
 					</Button>
 				</div>

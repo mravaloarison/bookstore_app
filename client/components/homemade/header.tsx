@@ -24,8 +24,8 @@ export default function Header() {
 
 	return (
 		<header className="p-4 flex w-full justify-between items-center border-b">
-			<h1 className="text-xl font-extrabold font-mono text-slate-500">
-				<span className="text-yellow-600">Book</span>Bridge
+			<h1 className="text-2xl font-extrabold font- text-slate-400">
+				<span className="text-slate-900">Book</span>Bridge
 			</h1>
 
 			<div className="flex gap-8 items-center">
@@ -34,11 +34,18 @@ export default function Header() {
 						<SignedInIcon />
 					</div>
 				) : (
-					<Button variant="secondary" onClick={signUserInWithGoogle}>
+					<Button variant="outline" onClick={signUserInWithGoogle}>
 						{isLoading ? (
 							<Loader className="w-6 h-6 animate-spin" />
 						) : (
-							"Sign in with Google"
+							<div className="flex gap-2 items-center">
+								<img
+									src="https://banner2.cleanpng.com/20180324/sbe/kisspng-google-logo-g-suite-google-5ab6f1f0dbc9b7.1299911115219389289003.jpg"
+									alt="Google Logo"
+									className="w-4 h-4"
+								/>
+								<p>Sign in with Google</p>
+							</div>
 						)}
 					</Button>
 				)}
