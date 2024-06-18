@@ -19,6 +19,13 @@ export default function AiRecommendations() {
 		}
 	}, []);
 
+	const callApi = () => {
+		fetch("/api/hello")
+			.then((response) => response.text())
+			.then((data) => console.log(data))
+			.catch((error) => console.error(error));
+	};
+
 	return (
 		<>
 			{isPro === null ? (
@@ -59,6 +66,8 @@ export default function AiRecommendations() {
 									all your questions
 								</p>
 							</div>
+
+							<Button onClick={callApi}>Call API</Button>
 						</div>
 						<div className="fixed bottom-0 left-0 p-4 w-full">
 							<form className="flex gap-4">
