@@ -19,13 +19,6 @@ export default function AiRecommendations() {
 		}
 	}, []);
 
-	const callApi = () => {
-		fetch("/api/hello")
-			.then((response) => response.text())
-			.then((data) => console.log(data))
-			.catch((error) => console.error(error));
-	};
-
 	return (
 		<>
 			{isPro === null ? (
@@ -33,7 +26,7 @@ export default function AiRecommendations() {
 					<Loader className="w-10 h-10 animate-spin" />
 				</div>
 			) : isPro ? (
-				<div className="max-w-5xl mx-auto w-full">
+				<div className="max-w-3xl mx-auto w-full">
 					<div className="flex flex-col min-h-[80vh] w-full gap-4 px-4 py-2">
 						<div className="flex flex-col gap-6">
 							<div className="bg-slate-100 rounded-lg p-4">
@@ -66,11 +59,28 @@ export default function AiRecommendations() {
 									all your questions
 								</p>
 							</div>
-
-							<Button onClick={callApi}>Call API</Button>
 						</div>
-						<div className="fixed bottom-0 left-0 p-4 w-full">
-							<form className="flex gap-4">
+						<div className="fixed bottom-0 right-0 left-0 p-4 max-w-3xl mx-auto w-full">
+							<form
+								className="flex gap-4"
+								onSubmit={(e) => {
+									e.preventDefault();
+
+									// send user input to AI
+									fetch("/api/chat", {
+										method: "POST",
+										body: JSON.stringify({
+											message:
+												"What book would you recomment me for thriller books",
+										}),
+									})
+										.then((res) => res.text())
+										.then((data) => console.log(data))
+										.catch((error) => console.error(error));
+
+									console.log("AI response");
+								}}
+							>
 								<Input placeholder="Ask AI" />
 								<Button type="submit" variant="secondary">
 									<Send className="h-5 w-5" />
