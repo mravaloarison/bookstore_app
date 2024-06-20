@@ -66,18 +66,6 @@ export default function AiRecommendations() {
 								onSubmit={(e) => {
 									e.preventDefault();
 
-									// send user input to AI
-									fetch("/api/chat", {
-										method: "POST",
-										body: JSON.stringify({
-											message:
-												"What book would you recomment me for thriller books",
-										}),
-									})
-										.then((res) => res.text())
-										.then((data) => console.log(data))
-										.catch((error) => console.error(error));
-
 									console.log("AI response");
 								}}
 							>

@@ -30,7 +30,10 @@ export default function Header() {
 
 	return (
 		<header className="p-4 flex w-full justify-between items-center border-b">
-			<h1 className="text-2xl font-extrabold font- text-indigo-500">
+			<h1
+				onClick={() => (window.location.href = "/")}
+				className="text-2xl font-extrabold text-indigo-500 hover:cursor-pointer"
+			>
 				<span className="text-slate-900">Book</span>Bridge
 			</h1>
 

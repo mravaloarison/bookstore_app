@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader, Search } from "lucide-react";
 
 import { searchBooks } from "@/app/functions/books";
@@ -36,10 +36,28 @@ interface BookRetrieved {
 }
 
 export default function Home() {
-	const [searchValue, setSearchValue] = useState("");
+	const [searchValue, setSearchValue] = useState("Marvel");
 
 	const [loadingBooks, setLoadingBooks] = useState(false);
 	const [books, setBooks] = useState<BookRetrieved[] | []>([]);
+
+	const [defaultBook, setDefaultBook] = useState<BookRetrieved[] | []>([]);
+
+	useEffect(() => {
+		// Default book if it is empty
+		if (defaultBook.length === 0) {
+			searchBooks("Marvel").then((books) => {
+				if (books) {
+					for (const book of books) {
+						setDefaultBook(
+							(prevBooks) =>
+								[...prevBooks, book] as BookRetrieved[]
+						);
+					}
+				}
+			});
+		}
+	}, []);
 
 	const userTyped = (value: string) => {
 		setSearchValue(value);
@@ -96,11 +114,37 @@ export default function Home() {
 			</section>
 
 			{books.length === 0 && !loadingBooks && (
-				<section className="w-full h-[30rem] md:h-[34rem] px-4">
-					<p className="text-slate-300 text-sm text-center">
-						Search for a book to get started
-					</p>
-				</section>
+				<>
+					{defaultBook.length === 0 ? (
+						<section className="w-full h-full px-4">
+							<div className="grid grid-cols-2 lg:grid-cols-7 gap-4">
+								{Array.from({ length: 20 }).map((_, index) => (
+									<LoadingBook key={index} />
+								))}
+							</div>
+						</section>
+					) : (
+						<section className="w-full h-full">
+							<div className="grid grid-cols-2 lg:grid-cols-7 gap-4 px-4">
+								{defaultBook.map((book, index) => (
+									<>
+										{index >= 20 ? null : (
+											<DrawerComponent
+												key={index}
+												trigger={
+													<LoadedBook book={book} />
+												}
+												content={
+													<BookDetails book={book} />
+												}
+											/>
+										)}
+									</>
+								))}
+							</div>
+						</section>
+					)}
+				</>
 			)}
 
 			{loadingBooks ? (
