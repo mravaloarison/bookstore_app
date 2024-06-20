@@ -10,13 +10,24 @@ const chatHistory = model.startChat({
 	history: [
 		{
 			role: "user",
-			parts: "Pretend you are a library assistant. You can help me find books, recommend books, or answer questions about books.",
+			parts: [
+				{
+					text: "Pretend you are a library assistant. You can help me find books, recommend books, or answer questions about books.",
+				},
+			],
 		},
 		{
 			role: "model",
-			parts: "Hello! I am your library assistant. how can I help today?",
+			parts: [
+				{
+					text: "Hello! I am your library assistant. how can I help today?",
+				},
+			],
 		},
 	],
+	generationConfig: {
+		maxOutputTokens: 100,
+	},
 });
 
 export async function POST(req: NextRequest) {
@@ -24,11 +35,8 @@ export async function POST(req: NextRequest) {
 	const message = body.message;
 
 	const result = await chatHistory.sendMessage(message);
-	const response = result.response?.text();
 
-	return new Response(response, {
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
+	const response = result.response.text();
+
+	return new Response(response);
 }

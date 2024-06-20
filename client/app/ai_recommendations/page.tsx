@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 
 export default function AiRecommendations() {
 	const [isPro, setIsPro] = useState(null);
+	const [userInput, setUserInput] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		const username = sessionStorage.getItem("user");
@@ -69,9 +71,19 @@ export default function AiRecommendations() {
 									console.log("AI response");
 								}}
 							>
-								<Input placeholder="Ask AI" />
+								<Input
+									placeholder="Ask AI"
+									value={userInput}
+									onChange={(e) =>
+										setUserInput(e.target.value)
+									}
+								/>
 								<Button type="submit" variant="secondary">
-									<Send className="h-5 w-5" />
+									{isLoading ? (
+										<Loader className="h-5 w-5 animate-spin" />
+									) : (
+										<Send className="h-5 w-5" />
+									)}
 								</Button>
 							</form>
 						</div>
