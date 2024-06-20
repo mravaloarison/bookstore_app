@@ -12,7 +12,7 @@ const chatHistory = model.startChat({
 			role: "user",
 			parts: [
 				{
-					text: "Pretend you are a library assistant. You can help me find books, recommend books, or answer questions about books.",
+					text: "Pretend you are a library assistant and stay in character for each response. You can help me find books, recommend books, or answer questions about books.",
 				},
 			],
 		},
@@ -25,9 +25,6 @@ const chatHistory = model.startChat({
 			],
 		},
 	],
-	generationConfig: {
-		maxOutputTokens: 100,
-	},
 });
 
 export async function POST(req: NextRequest) {

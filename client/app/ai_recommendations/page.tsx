@@ -1,16 +1,52 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import PleaseUpgrade from "@/components/homemade/please_upgrade";
 import { isProMember } from "../functions/authentication";
 import { Loader, Send, Sparkles, UserRound } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+interface ChatHistory {
+	user: string;
+	ai: string;
+}
+
+const userInputType = (userInput: string) => {
+	return (
+		<div className="flex gap-4 items-start">
+			<div className="border p-1 rounded-lg flex items-center">
+				<UserRound className="w-4 h-4" />
+			</div>
+			<p className="text-sm">{userInput}</p>
+		</div>
+	);
+};
+
+const aiResponseType = (aiResponse: string, isLoading: boolean) => {
+	return (
+		<div className="flex gap-4 items-start">
+			<div className="border p-1 rounded-lg flex items-center">
+				<Sparkles className="w-4 h-4 fill-indigo-500 stroke-indigo-500" />
+			</div>
+			<p className="text-sm">
+				{isLoading ? (
+					<Loader className="w-4 h-4 animate-spin" />
+				) : (
+					aiResponse
+				)}
+			</p>
+		</div>
+	);
+};
+
 export default function AiRecommendations() {
 	const [isPro, setIsPro] = useState(null);
 	const [userInput, setUserInput] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [chatHistory, setChatHistory] = useState<ChatHistory>(
+		{} as ChatHistory
+	);
 
 	useEffect(() => {
 		const username = sessionStorage.getItem("user");
@@ -20,6 +56,24 @@ export default function AiRecommendations() {
 				.catch((error) => console.error(error));
 		}
 	}, []);
+
+	const sendMessage = (message: string) => {
+		setIsLoading(true);
+		fetch("api/chat", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ message }),
+		})
+			.then((res) => res.text())
+			.then((data) => {
+				setChatHistory({ user: message, ai: data });
+				setIsLoading(false);
+			})
+			.catch((error) => console.error(error));
+		setUserInput("");
+	};
 
 	return (
 		<>
@@ -43,23 +97,17 @@ export default function AiRecommendations() {
 								</p>
 							</div>
 
-							<div className="flex gap-4 items-start">
-								<div className="border p-1 rounded-lg flex items-center">
-									<UserRound className="w-4 h-4" />
-								</div>
-								<p className="text-sm">
-									Here is supposed to be user question
-								</p>
-							</div>
+							{aiResponseType(
+								"Hello! How can I help you today?",
+								false
+							)}
 
-							<div className="flex gap-4 items-start">
-								<div className="border p-1 rounded-lg flex items-center">
-									<Sparkles className="w-4 h-4 fill-indigo-500 stroke-indigo-500" />
-								</div>
-								<p className="text-sm">
-									Hello I am an AI and I am here to respond to
-									all your questions
-								</p>
+							{/* CHAT */}
+							<div className="flex flex-col gap-4">
+								{chatHistory.user &&
+									userInputType(chatHistory.user)}
+								{chatHistory.ai &&
+									aiResponseType(chatHistory.ai, isLoading)}
 							</div>
 						</div>
 						<div className="fixed bottom-0 right-0 left-0 p-4 max-w-3xl mx-auto w-full">
@@ -67,8 +115,7 @@ export default function AiRecommendations() {
 								className="flex gap-4"
 								onSubmit={(e) => {
 									e.preventDefault();
-
-									console.log("AI response");
+									sendMessage(userInput);
 								}}
 							>
 								<Input
