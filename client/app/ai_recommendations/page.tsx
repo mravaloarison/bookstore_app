@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import PleaseUpgrade from "@/components/homemade/please_upgrade";
 import { isProMember } from "../functions/authentication";
 import { Loader, Send, Sparkles, UserRound } from "lucide-react";
@@ -44,9 +44,8 @@ export default function AiRecommendations() {
 	const [isPro, setIsPro] = useState(null);
 	const [userInput, setUserInput] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [chatHistory, setChatHistory] = useState<ChatHistory>(
-		{} as ChatHistory
-	);
+
+	const [chatHistory, setChatHistory] = useState<ChatHistory | null>(null);
 
 	useEffect(() => {
 		const username = sessionStorage.getItem("user");
@@ -59,6 +58,9 @@ export default function AiRecommendations() {
 
 	const sendMessage = (message: string) => {
 		setIsLoading(true);
+
+		setChatHistory({ user: message, ai: "" });
+
 		fetch("api/chat", {
 			method: "POST",
 			headers: {
@@ -78,12 +80,10 @@ export default function AiRecommendations() {
 	return (
 		<>
 			{isPro === null ? (
-				<div className="w-full h-full flex justify-center items-center">
-					<Loader className="w-10 h-10 animate-spin" />
-				</div>
+				<PleaseUpgrade />
 			) : isPro ? (
 				<div className="max-w-3xl mx-auto w-full">
-					<div className="flex flex-col min-h-[80vh] w-full gap-4 px-4 py-2">
+					<div className="flex flex-col min-h-[80vh] w-full gap-4 px-4 py-2 md:py-4">
 						<div className="flex flex-col gap-6">
 							<div className="bg-slate-100 rounded-lg p-4">
 								<h1 className="text-xl font-semibold">
@@ -102,15 +102,14 @@ export default function AiRecommendations() {
 								false
 							)}
 
-							{/* CHAT */}
-							<div className="flex flex-col gap-4">
-								{chatHistory.user &&
-									userInputType(chatHistory.user)}
-								{chatHistory.ai &&
-									aiResponseType(chatHistory.ai, isLoading)}
-							</div>
+							{chatHistory ? (
+								<>
+									{userInputType(chatHistory.user)}
+									{aiResponseType(chatHistory.ai, isLoading)}
+								</>
+							) : null}
 						</div>
-						<div className="fixed bottom-0 right-0 left-0 p-4 max-w-3xl mx-auto w-full">
+						<div className="fixed bottom-0 right-0 left-0 p-4 md:py-8 max-w-3xl mx-auto w-full">
 							<form
 								className="flex gap-4"
 								onSubmit={(e) => {
@@ -137,7 +136,9 @@ export default function AiRecommendations() {
 					</div>
 				</div>
 			) : (
-				<PleaseUpgrade />
+				<div className="w-full h-full flex justify-center items-center">
+					<Loader className="w-10 h-10 animate-spin" />
+				</div>
 			)}
 		</>
 	);

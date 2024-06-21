@@ -93,8 +93,8 @@ export default function Home() {
 
 	return (
 		<div className="flex flex-col gap-2 lg:gap-4 max-w-7xl mx-auto w-full lg:py-4">
-			<section className="w-full flex">
-				<div className="flex w-full max-w-lg mx-auto items-center space-x-4 p-4">
+			<section className="w-full flex flex-col gap-2 p-4">
+				<div className="flex w-full max-w-lg mx-auto items-center space-x-4 px-4">
 					<Input
 						type="search"
 						value={searchValue}
@@ -111,6 +111,9 @@ export default function Home() {
 						)}
 					</Button>
 				</div>
+				<p className="text-center text-sm text-slate-300">
+					Search for books by typing in the search bar above.
+				</p>
 			</section>
 
 			{books.length === 0 && !loadingBooks && (
