@@ -8,6 +8,7 @@ import {
 	deleteDoc,
 } from "firebase/firestore";
 import { conf } from "./firebase_config";
+import { get } from "http";
 
 const firebaseConfig = conf;
 
@@ -137,16 +138,34 @@ export function isProMember(username: string | null): Promise<boolean> {
 
 export function addToCommunity(
 	bookId: string,
-	username: string,
-	bookName: string | null
+	bookName: string | null,
+	username: string | null
 ) {
-	// let userExists = false;
-	// let bookExists = false;
+	let userExists = false;
+	let bookExists = false;
 
-	addDoc(collection(db, "community"), {
-		bookId: bookId,
-		member: [username],
-		bookName: bookName,
-		joinedAt: getFormattedJoinedAt(),
+	// ACTION 1
+	getDocs(collection(db, "community")).then((querySnapshot) => {
+		querySnapshot.forEach((doc) => {
+			if (doc.data().bookId === bookId) {
+				bookExists = true;
+				if (doc.data().member.includes(username)) {
+					userExists = true;
+				} else {
+					const member = doc.data().member;
+					member.push(username);
+				}
+			}
+		});
 	});
+
+	// RUN THIS ONLY AFTER ACTION 1
+	if (!bookExists) {
+		addDoc(collection(db, "community"), {
+			bookId: bookId,
+			member: [username],
+			bookName: bookName,
+			joinedAt: getFormattedJoinedAt(),
+		});
+	}
 }

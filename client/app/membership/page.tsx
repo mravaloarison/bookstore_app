@@ -30,7 +30,7 @@ export default function Membership() {
 			setIsClassic(!isProMemberResult);
 			setActivePlan(isProMemberResult ? "Pro" : "Classic");
 		});
-	});
+	}, []);
 
 	const handleClassicClick = () => {
 		setIsPro(false);
