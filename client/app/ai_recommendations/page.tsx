@@ -46,6 +46,10 @@ export default function AiRecommendations() {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [chatHistory, setChatHistory] = useState<ChatHistory | null>(null);
+	const [AiResponses, setAiResponses] = useState([
+		"Hello! I am your library assistant. how can I help today?",
+	]);
+	const [latestMessageIndex, setLatestMessageIndex] = useState(0);
 
 	useEffect(() => {
 		const username = sessionStorage.getItem("user");
@@ -61,6 +65,8 @@ export default function AiRecommendations() {
 
 		setChatHistory({ user: message, ai: "" });
 
+		setLatestMessageIndex(AiResponses.length - 1);
+
 		fetch("api/chat", {
 			method: "POST",
 			headers: {
@@ -70,6 +76,9 @@ export default function AiRecommendations() {
 		})
 			.then((res) => res.text())
 			.then((data) => {
+				setAiResponses([...AiResponses, data]);
+				setLatestMessageIndex(AiResponses.length - 1);
+
 				setChatHistory({ user: message, ai: data });
 				setIsLoading(false);
 			})
@@ -98,7 +107,7 @@ export default function AiRecommendations() {
 							</div>
 
 							{aiResponseType(
-								"Hello! How can I help you today?",
+								AiResponses[latestMessageIndex],
 								false
 							)}
 
