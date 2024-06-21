@@ -89,10 +89,12 @@ export default function AiRecommendations() {
 	return (
 		<>
 			{isPro === null ? (
-				<PleaseUpgrade />
+				<div className="w-full h-full flex justify-center items-center">
+					<Loader className="w-10 h-10 animate-spin" />
+				</div>
 			) : isPro ? (
 				<div className="max-w-3xl mx-auto w-full">
-					<div className="flex flex-col min-h-[80vh] w-full gap-4 px-4 py-2 md:py-4">
+					<div className="flex flex-col min-h-[80vh] w-full gap-4 px-4 py-2 md:py-8">
 						<div className="flex flex-col gap-6">
 							<div className="bg-slate-100 rounded-lg p-4">
 								<h1 className="text-xl font-semibold">
@@ -145,9 +147,7 @@ export default function AiRecommendations() {
 					</div>
 				</div>
 			) : (
-				<div className="w-full h-full flex justify-center items-center">
-					<Loader className="w-10 h-10 animate-spin" />
-				</div>
+				<PleaseUpgrade />
 			)}
 		</>
 	);

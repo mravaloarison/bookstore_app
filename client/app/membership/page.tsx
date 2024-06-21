@@ -91,7 +91,7 @@ export default function Membership() {
 	];
 
 	return activePlan !== "" ? (
-		<div className="flex flex-col gap-8 w-full h-full items-center py-8">
+		<div className="flex flex-col gap-8 w-full h-full items-center py-8 lg:py-16">
 			<h1 className="text-center text-xl flex gap-2">
 				Active Plan: <span className="font-bold">{activePlan}</span>
 				<span className="flex h-2 w-2 translate-y-1 rounded-full bg-green-500" />
