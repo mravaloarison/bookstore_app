@@ -84,7 +84,7 @@ export default function SignedInIcon() {
 				<DropdownMenuLabel>{user}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				{menuItems.map((item, index) => (
-					<Link href={item.path} key={index}>
+					<Link href={item.path} key={index} className="md:hidden">
 						<DropdownMenuItem className="bg-primary/50">
 							<item.icon className="w-4 h-4 mr-2" />
 							{item.text}
