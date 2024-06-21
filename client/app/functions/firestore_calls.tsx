@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
 import {
 	getFirestore,
 	addDoc,
@@ -12,59 +12,6 @@ import { conf } from "./firebase_config";
 const firebaseConfig = conf;
 
 const app = initializeApp(firebaseConfig);
-
-const provider = new GoogleAuthProvider();
-const auth = getAuth(app);
-
-interface SignInCallback {
-	(error?: Error): void;
-}
-
-function getFormattedJoinedAt(): string {
-	const now = new Date();
-
-	const joinedAt = new Date(now.getTime());
-
-	const options: Intl.DateTimeFormatOptions = {
-		year: "numeric" as const,
-		month: "long" as const,
-		day: "numeric" as const,
-		hour: "numeric" as const,
-		minute: "2-digit" as const,
-		hour12: true,
-	};
-	const formatter = new Intl.DateTimeFormat("en-US", {
-		...options,
-		timeZone: "America/New_York",
-	});
-	const formattedDateTime = formatter.format(joinedAt);
-
-	return formattedDateTime;
-}
-
-export const signInWithGoogle = (callback: SignInCallback) => {
-	signInWithPopup(auth, provider)
-		.then((result) => {
-			const user = result.user;
-
-			user.displayName &&
-				sessionStorage.setItem("user", user.displayName);
-			callback();
-
-			// add user to firestore
-			addingUser(user.displayName, user.uid);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
-};
-
-export const signOut = () => {
-	sessionStorage.removeItem("user");
-	auth.signOut();
-
-	window.location.reload();
-};
 
 const db = getFirestore(app);
 
@@ -140,13 +87,41 @@ export function addToCommunity(
 	username: string,
 	bookName: string | null
 ) {
-	// let userExists = false;
-	// let bookExists = false;
-
-	addDoc(collection(db, "community"), {
-		bookId: bookId,
-		member: [username],
-		bookName: bookName,
-		joinedAt: getFormattedJoinedAt(),
+	getDocs(collection(db, "community")).then((querySnapshot) => {
+		querySnapshot.forEach((doc) => {
+			if (doc.data().bookId === bookId) {
+				const member = doc.data().member;
+				member.push(username);
+			} else {
+				addDoc(collection(db, "community"), {
+					bookId: bookId,
+					bookName: bookName,
+					member: [username],
+					joinedAt: getFormattedJoinedAt(),
+				});
+			}
+		});
 	});
+}
+
+function getFormattedJoinedAt(): string {
+	const now = new Date();
+
+	const joinedAt = new Date(now.getTime());
+
+	const options: Intl.DateTimeFormatOptions = {
+		year: "numeric" as const,
+		month: "long" as const,
+		day: "numeric" as const,
+		hour: "numeric" as const,
+		minute: "2-digit" as const,
+		hour12: true,
+	};
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		...options,
+		timeZone: "America/New_York",
+	});
+	const formattedDateTime = formatter.format(joinedAt);
+
+	return formattedDateTime;
 }

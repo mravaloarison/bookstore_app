@@ -36,7 +36,7 @@ interface BookRetrieved {
 }
 
 export default function Home() {
-	const [searchValue, setSearchValue] = useState("Marvel");
+	const [searchValue, setSearchValue] = useState("Outsiders");
 
 	const [loadingBooks, setLoadingBooks] = useState(false);
 	const [books, setBooks] = useState<BookRetrieved[] | []>([]);
@@ -46,7 +46,7 @@ export default function Home() {
 	useEffect(() => {
 		// Default book if it is empty
 		if (defaultBook.length === 0) {
-			searchBooks("Marvel").then((books) => {
+			searchBooks(searchValue).then((books) => {
 				if (books) {
 					for (const book of books) {
 						setDefaultBook(

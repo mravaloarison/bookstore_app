@@ -35,7 +35,7 @@ export default function Community() {
 							<h1 className="text-xl font-semibold">
 								Community page
 							</h1>
-							<p>You have not Joined a Community yet</p>
+							<p>You did not join a community yet</p>
 						</div>
 					) : (
 						<PleaseUpgrade />

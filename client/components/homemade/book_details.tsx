@@ -2,6 +2,7 @@ import { Heart, ShoppingCart, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { DrawerDescription, DrawerHeader } from "../ui/drawer";
 import { toast } from "sonner";
+import { addToCommunity } from "@/app/functions/authentication";
 
 interface Book {
 	kind: string;
@@ -28,18 +29,26 @@ interface Book {
 }
 
 export default function BookDetails({ book }: { book: Book }) {
+	const user = sessionStorage.getItem("user");
 	const userNotSignedIn = sessionStorage.getItem("user") === null;
 
 	const IsUserLoggedIn = () => {
 		if (userNotSignedIn) {
 			toast.warning("Please sign in to access this feature.");
-			return;
+			return false;
 		}
+
+		return true;
 	};
 
-	const JoinCommunity = (bookId: string) => {
-		IsUserLoggedIn();
-		console.log("Joining community for book", bookId);
+	const JoinCommunity = (bookId: string, bookName: string) => {
+		if (userNotSignedIn) {
+			toast.warning("Please sign in to access this feature.");
+			return;
+		}
+
+		console.log("Function join community is running");
+		addToCommunity(bookId, bookName, user);
 	};
 
 	const AddToFavorite = (bookId: string) => {
@@ -68,7 +77,9 @@ export default function BookDetails({ book }: { book: Book }) {
 					/>
 					<Button
 						variant={userNotSignedIn ? "outline" : "default"}
-						onClick={() => JoinCommunity(book.id)}
+						onClick={() =>
+							JoinCommunity(book.id, book.volumeInfo.title)
+						}
 						className="flex gap-4 w-full"
 					>
 						<Users className="w-5 h-5" />
