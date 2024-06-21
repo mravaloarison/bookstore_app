@@ -64,7 +64,7 @@ export default function Navigation() {
 						className={`
 							${
 								pathName === item.path ? ` bg-slate-50` : ""
-							} flex items-center gap-2 hover:cursor-pointer hover:bg-slate-50 rounded-lg px-4 py-2
+							} group flex items-center gap-2 hover:cursor-pointer hover:bg-slate-50 rounded-lg px-4 py-2
                             `}
 					>
 						<item.icon
@@ -75,9 +75,9 @@ export default function Navigation() {
 							} ${
 								index === 6 &&
 								"fill-yellow-500 stroke-yellow-500"
-							}`}
+							} group-hover:scale-110 transition-transform duration-300`}
 						/>
-						<span>{item.text}</span>
+						<span className="text-sm">{item.text}</span>
 					</Link>
 				);
 			})}
