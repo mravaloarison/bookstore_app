@@ -41,14 +41,18 @@ export default function BookDetails({ book }: { book: Book }) {
 		return true;
 	};
 
-	const JoinCommunity = (bookId: string, bookName: string) => {
+	const JoinCommunity = (
+		bookId: string,
+		bookName: string,
+		bookImg: string | undefined
+	) => {
 		if (userNotSignedIn) {
 			toast.warning("Please sign in to access this feature.");
 			return;
 		}
 
 		console.log("Function join community is running");
-		addToCommunity(bookId, bookName, user);
+		addToCommunity(bookId, bookName, bookImg, user);
 	};
 
 	const AddToFavorite = (bookId: string) => {
@@ -78,7 +82,11 @@ export default function BookDetails({ book }: { book: Book }) {
 					<Button
 						variant={userNotSignedIn ? "outline" : "default"}
 						onClick={() =>
-							JoinCommunity(book.id, book.volumeInfo.title)
+							JoinCommunity(
+								book.id,
+								book.volumeInfo.title,
+								book.volumeInfo.imageLinks?.thumbnail
+							)
 						}
 						className="flex gap-4 w-full"
 					>

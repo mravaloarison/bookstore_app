@@ -8,7 +8,6 @@ import {
 	deleteDoc,
 } from "firebase/firestore";
 import { conf } from "./firebase_config";
-import { get } from "http";
 
 const firebaseConfig = conf;
 
@@ -139,6 +138,7 @@ export function isProMember(username: string | null): Promise<boolean> {
 export function addToCommunity(
 	bookId: string,
 	bookName: string | null,
+	bookImg: string | undefined,
 	username: string | null
 ) {
 	let userExists = false;
@@ -149,23 +149,38 @@ export function addToCommunity(
 		querySnapshot.forEach((doc) => {
 			if (doc.data().bookId === bookId) {
 				bookExists = true;
-				if (doc.data().member.includes(username)) {
+				if (doc.data().members.includes(username)) {
 					userExists = true;
 				} else {
-					const member = doc.data().member;
-					member.push(username);
+					const members = doc.data().members;
+					members.push(username);
 				}
 			}
 		});
 	});
 
-	// RUN THIS ONLY AFTER ACTION 1
-	if (!bookExists) {
-		addDoc(collection(db, "community"), {
-			bookId: bookId,
-			member: [username],
-			bookName: bookName,
-			joinedAt: getFormattedJoinedAt(),
+	const newFunction = () => {
+		if (!bookExists) {
+			addDoc(collection(db, "community"), {
+				bookId: bookId,
+				bookImg: bookImg,
+				members: [username],
+				bookName: bookName,
+				joinedAt: getFormattedJoinedAt(),
+			});
+		}
+	};
+
+	newFunction();
+}
+
+export function getCommunity() {
+	let res: any[] = [];
+	getDocs(collection(db, "community")).then((querySnapshot) => {
+		querySnapshot.forEach((doc) => {
+			res.push(doc.data());
 		});
-	}
+	});
+
+	return res;
 }

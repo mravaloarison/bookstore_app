@@ -8,3 +8,8 @@ CORS(app)
 @app.route('/')
 def api():
     return jsonify({"test": "Testing Python Api"})
+
+
+@app.route("/say_hello")
+def say_hello():
+    return jsonify({"message": "The Api says hello"})

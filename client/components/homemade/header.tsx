@@ -30,12 +30,19 @@ export default function Header() {
 
 	return (
 		<header className="p-4 flex w-full justify-between items-center border-b">
-			<h1
+			<div
 				onClick={() => (window.location.href = "/")}
-				className="text-2xl font-extrabold text-indigo-500 hover:cursor-pointer"
+				className="text-2xl font-extrabold text-orange-500 hover:cursor-pointer flex items-baseline gap-2"
 			>
-				<span className="text-slate-900">Book</span>Bridge
-			</h1>
+				<img
+					src="/logo1.png"
+					alt="BookBridge Logo"
+					className="w-15 h-8"
+				/>
+				<p>
+					<span className="text-slate-900">Book</span>Bridge
+				</p>
+			</div>
 
 			<div className="flex gap-8 items-center">
 				{isLoggedIn ? (
