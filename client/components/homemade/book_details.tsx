@@ -28,6 +28,11 @@ interface Book {
 	};
 }
 
+interface FirestoreResponse {
+	message: string;
+	status: number;
+}
+
 export default function BookDetails({ book }: { book: Book }) {
 	const user = sessionStorage.getItem("user");
 	const userNotSignedIn = sessionStorage.getItem("user") === null;
@@ -51,13 +56,27 @@ export default function BookDetails({ book }: { book: Book }) {
 			return;
 		}
 
-		console.log("Function join community is running");
-		addToCommunity(bookId, bookName, bookImg, user);
+		const response = addToCommunity(bookId, bookName, bookImg, user);
+
+		const promise = (): Promise<FirestoreResponse> =>
+			new Promise((resolve) => {
+				resolve(response);
+			});
+
+		toast.promise(promise, {
+			loading: "Joining ...",
+			success: (data) => {
+				return data.status === 200
+					? "Joined successfully"
+					: "You are already a member of this community!";
+			},
+			error: "Something went wrong. Please try again.",
+		});
 	};
 
 	const AddToFavorite = (bookId: string) => {
 		IsUserLoggedIn();
-		console.log("Adding book to favorite", bookId);
+		alert("Adding book to favorite: " + bookId);
 	};
 
 	const BuyBook = (bookId: string) => {

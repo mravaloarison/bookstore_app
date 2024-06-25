@@ -5,6 +5,7 @@ import PleaseUpgrade from "@/components/homemade/please_upgrade";
 import { isProMember, getCommunity } from "../functions/authentication";
 import { Loader } from "lucide-react";
 import MustSignIn from "@/components/homemade/must_sign_in";
+import { Input } from "@/components/ui/input";
 
 interface CommunityInter {
 	bookId: string;
@@ -51,28 +52,38 @@ export default function Community() {
 									<p>You did not join a community yet</p>
 								</div>
 							) : (
-								community.map((doc) => {
-									return (
-										<div
-											key={doc.bookId}
-											className="w-full flex items-center gap-4 p-4 border-b max-w-2xl mx-auto"
-										>
-											<img
-												src={doc.bookImg}
-												alt={doc.bookName}
-												className="w-20 h-20 rounded-lg"
-											/>
-											<div className="flex flex-col gap-2 text-sm">
-												<p className="font-bold">
-													{doc.bookName}
-												</p>
-												<p>
-													{doc.members.length} members
-												</p>
+								<>
+									<div className="py-6 px-8">
+										<Input
+											type="text"
+											placeholder="Search for a community"
+											className="w-full max-w-2xl mx-auto"
+										/>
+									</div>
+									{community.map((doc) => {
+										return (
+											<div
+												key={doc.bookId}
+												className="w-full flex items-center gap-4 p-4 border-b max-w-2xl mx-auto"
+											>
+												<img
+													src={doc.bookImg}
+													alt={doc.bookName}
+													className="w-20 h-20 rounded-lg"
+												/>
+												<div className="flex flex-col gap-2 text-sm">
+													<p className="font-bold">
+														{doc.bookName}
+													</p>
+													<p>
+														{doc.members.length}{" "}
+														members
+													</p>
+												</div>
 											</div>
-										</div>
-									);
-								})
+										);
+									})}
+								</>
 							)}
 						</>
 					) : (

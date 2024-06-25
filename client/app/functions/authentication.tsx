@@ -6,6 +6,9 @@ import {
 	collection,
 	getDocs,
 	deleteDoc,
+	setDoc,
+	doc,
+	getDoc,
 } from "firebase/firestore";
 import { conf } from "./firebase_config";
 
@@ -141,37 +144,43 @@ export function addToCommunity(
 	bookImg: string | undefined,
 	username: string | null
 ) {
-	let userExists = false;
-	let bookExists = false;
+	const BookRef: any = collection(db, "community");
 
-	// ACTION 1
-	getDocs(collection(db, "community")).then((querySnapshot) => {
-		querySnapshot.forEach((doc) => {
-			if (doc.data().bookId === bookId) {
-				bookExists = true;
-				if (doc.data().members.includes(username)) {
-					userExists = true;
-				} else {
-					const members = doc.data().members;
-					members.push(username);
-				}
+	const res = getDoc(doc(BookRef, bookId)).then((docSnap: any) => {
+		if (docSnap.exists()) {
+			const members = docSnap.data().members;
+
+			if (!members.includes(username)) {
+				setDoc(doc(BookRef, bookId), {
+					bookId: bookId,
+					bookName: bookName,
+					bookImg: bookImg,
+					members: [...docSnap.data().members, username],
+				});
+
+				return {
+					message: "Community joined successfully!",
+					status: 200,
+				};
 			}
-		});
-	});
 
-	const newFunction = () => {
-		if (!bookExists) {
-			addDoc(collection(db, "community"), {
+			return {
+				message: "You are already a member of this community!",
+				status: 500,
+			};
+		} else {
+			setDoc(doc(BookRef, bookId), {
 				bookId: bookId,
+				bookName: bookName,
 				bookImg: bookImg,
 				members: [username],
-				bookName: bookName,
-				joinedAt: getFormattedJoinedAt(),
 			});
-		}
-	};
 
-	newFunction();
+			return { message: "Community joined successfully!", status: 200 };
+		}
+	});
+
+	return res;
 }
 
 export function getCommunity() {
@@ -183,4 +192,19 @@ export function getCommunity() {
 	});
 
 	return res;
+}
+
+export function addToFavorite(
+	bookId: string,
+	bookName: string,
+	bookImg: string | undefined
+) {
+	addDoc(collection(db, "favorites"), {
+		bookId: bookId,
+		bookName: bookName,
+		bookImg: bookImg,
+		userName: sessionStorage.getItem("user"),
+	});
+
+	return 0;
 }
