@@ -75,11 +75,7 @@ export default function BookDetails({ book }: { book: Book }) {
 		});
 	};
 
-	const AddToFavorite = (
-		bookId: string,
-		bookName: string,
-		bookImg: string | undefined
-	) => {
+	const AddToFavorite = (bookId: string) => {
 		IsUserLoggedIn();
 
 		if (userNotSignedIn) {
