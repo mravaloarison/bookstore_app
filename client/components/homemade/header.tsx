@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader } from "lucide-react";
+import { Loader, Menu } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { signInWithGoogle } from "@/app/functions/authentication";
@@ -46,8 +46,13 @@ export default function Header() {
 
 			<div className="flex gap-8 items-center">
 				{isLoggedIn ? (
-					<div className="flex bg-muted/40">
-						<SignedInIcon />
+					<div>
+						<div className="lg:flex bg-muted/40 hidden">
+							<SignedInIcon />
+						</div>
+						<div className="lg:hidden flex">
+							<Menu />
+						</div>
 					</div>
 				) : (
 					<Button variant="outline" onClick={signUserInWithGoogle}>

@@ -275,3 +275,29 @@ export function addToPurchase(bookId: string, userName: string | null) {
 
 	return res;
 }
+
+export function getFavorites(userName: string | null) {
+	let res: any[] = [];
+	getDocs(collection(db, "favorites")).then((querySnapshot) => {
+		querySnapshot.forEach((doc) => {
+			if (doc.id === userName) {
+				res = doc.data().books;
+			}
+		});
+	});
+
+	return res;
+}
+
+export function getPurchases(userName: string | null) {
+	let res: any[] = [];
+	getDocs(collection(db, "purchases")).then((querySnapshot) => {
+		querySnapshot.forEach((doc) => {
+			if (doc.id === userName) {
+				res = doc.data().books;
+			}
+		});
+	});
+
+	return res;
+}

@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import PleaseUpgrade from "@/components/homemade/please_upgrade";
-import { isProMember } from "../functions/authentication";
+import { getFavorites, isProMember } from "../functions/authentication";
 import { Loader } from "lucide-react";
 import MustSignIn from "@/components/homemade/must_sign_in";
 
 export default function FavoritesPage() {
 	const [username, setUsername] = useState("");
 	const [isPro, setIsPro] = useState(null);
+	const [favorites, setFavorites] = useState([]);
 
 	useEffect(() => {
 		const username = sessionStorage.getItem("user");
@@ -19,6 +20,15 @@ export default function FavoritesPage() {
 				.catch((error) => console.error(error));
 		}
 	});
+
+	useEffect(() => {
+		if (favorites.length === 0) {
+			// fetch favorites
+			const favoritesInFirestore: any = getFavorites(username);
+			console.log("Favorites: ", favoritesInFirestore);
+			setFavorites(favoritesInFirestore);
+		}
+	}, []);
 
 	return (
 		<>
