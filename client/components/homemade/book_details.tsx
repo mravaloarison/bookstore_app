@@ -2,7 +2,7 @@ import { Heart, ShoppingCart, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { DrawerDescription, DrawerHeader } from "../ui/drawer";
 import { toast } from "sonner";
-import { addToCommunity } from "@/app/functions/authentication";
+import { addToCommunity, addToFavorite } from "@/app/functions/authentication";
 
 interface Book {
 	kind: string;
@@ -35,6 +35,7 @@ interface FirestoreResponse {
 
 export default function BookDetails({ book }: { book: Book }) {
 	const user = sessionStorage.getItem("user");
+	const userId = sessionStorage.getItem("userId");
 	const userNotSignedIn = sessionStorage.getItem("user") === null;
 
 	const IsUserLoggedIn = () => {
@@ -74,9 +75,36 @@ export default function BookDetails({ book }: { book: Book }) {
 		});
 	};
 
-	const AddToFavorite = (bookId: string) => {
+	const AddToFavorite = (
+		bookId: string,
+		bookName: string,
+		bookImg: string | undefined
+	) => {
 		IsUserLoggedIn();
-		alert("Adding book to favorite: " + bookId);
+
+		if (userNotSignedIn) {
+			toast.warning("Please sign in to access this feature.");
+			return;
+		}
+
+		const response = addToFavorite(bookId, user);
+
+		console.log("Response: ", response);
+
+		const promise = (): Promise<FirestoreResponse> =>
+			new Promise((resolve) => {
+				resolve(response);
+			});
+
+		toast.promise(promise, {
+			loading: "Adding to favorite ...",
+			success: (data) => {
+				return data.status === 200
+					? "Added to favorite successfully"
+					: "You have already added this book to your favorite list!";
+			},
+			error: "Something went wrong. Please try again.",
+		});
 	};
 
 	const BuyBook = (bookId: string) => {

@@ -52,6 +52,8 @@ export const signInWithGoogle = (callback: SignInCallback) => {
 
 			user.displayName &&
 				sessionStorage.setItem("user", user.displayName);
+
+			user.uid && sessionStorage.setItem("userId", user.uid);
 			callback();
 
 			// add user to firestore
@@ -194,17 +196,42 @@ export function getCommunity() {
 	return res;
 }
 
-export function addToFavorite(
-	bookId: string,
-	bookName: string,
-	bookImg: string | undefined
-) {
-	addDoc(collection(db, "favorites"), {
-		bookId: bookId,
-		bookName: bookName,
-		bookImg: bookImg,
-		userName: sessionStorage.getItem("user"),
-	});
+export function addToFavorite(bookId: string, userName: string | null) {
+	const BookRef: any = collection(db, "favorites");
 
-	return 0;
+	const res = getDoc(doc(BookRef, userName ? userName : "Empty")).then(
+		(docSnap: any) => {
+			if (docSnap.exists()) {
+				const booksInUserFavorites = docSnap.data().books;
+
+				if (booksInUserFavorites.includes(bookId)) {
+					return {
+						message:
+							"You already have this book in your favorites!",
+						status: 201,
+					};
+				}
+
+				setDoc(doc(BookRef, userName ? userName : "Empty"), {
+					books: [...docSnap.data().books, bookId],
+				});
+
+				return {
+					message: "You already have this book in your favorites!",
+					status: 200,
+				};
+			}
+
+			setDoc(doc(BookRef, userName ? userName : "Empty"), {
+				books: [bookId],
+			});
+
+			return {
+				message: "Book added to favorites successfully!",
+				status: 200,
+			};
+		}
+	);
+
+	return res;
 }
