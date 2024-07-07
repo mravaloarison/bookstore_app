@@ -2,7 +2,11 @@ import { Heart, ShoppingCart, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { DrawerDescription, DrawerHeader } from "../ui/drawer";
 import { toast } from "sonner";
-import { addToCommunity, addToFavorite } from "@/app/functions/authentication";
+import {
+	addToCommunity,
+	addToFavorite,
+	addToPurchase,
+} from "@/app/functions/authentication";
 
 interface Book {
 	kind: string;
@@ -103,9 +107,31 @@ export default function BookDetails({ book }: { book: Book }) {
 		});
 	};
 
-	const BuyBook = (bookId: string) => {
+	const Purchase = (bookId: string) => {
 		IsUserLoggedIn();
-		console.log("Buying book", bookId);
+
+		if (userNotSignedIn) {
+			toast.warning("Please sign in to access this feature.");
+			return;
+		}
+
+		const response = addToPurchase(bookId, user);
+		console.log("Response: ", response);
+
+		const promise = (): Promise<FirestoreResponse> =>
+			new Promise((resolve) => {
+				resolve(response);
+			});
+
+		toast.promise(promise, {
+			loading: "Purchasing ...",
+			success: (data) => {
+				return data.status === 200
+					? "Purchased successfully"
+					: "You have already purchased this book!";
+			},
+			error: "Something went wrong. Please try again.",
+		});
 	};
 
 	return (
@@ -151,7 +177,7 @@ export default function BookDetails({ book }: { book: Book }) {
 					{book.saleInfo.retailPrice ? (
 						<Button
 							variant={userNotSignedIn ? "outline" : "secondary"}
-							onClick={() => BuyBook(book.id)}
+							onClick={() => Purchase(book.id)}
 							className="flex gap-4 w-full"
 						>
 							<ShoppingCart className="w-5 h-5" />

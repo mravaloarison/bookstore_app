@@ -235,3 +235,43 @@ export function addToFavorite(bookId: string, userName: string | null) {
 
 	return res;
 }
+
+export function addToPurchase(bookId: string, userName: string | null) {
+	const BookRef: any = collection(db, "purchases");
+
+	const res = getDoc(doc(BookRef, userName ? userName : "Empty")).then(
+		(docSnap: any) => {
+			if (docSnap.exists()) {
+				const booksInUserPurchases = docSnap.data().books;
+
+				if (booksInUserPurchases.includes(bookId)) {
+					return {
+						message:
+							"You already have this book in your purchases!",
+						status: 201,
+					};
+				}
+
+				setDoc(doc(BookRef, userName ? userName : "Empty"), {
+					books: [...docSnap.data().books, bookId],
+				});
+
+				return {
+					message: "You already have this book in your purchases!",
+					status: 200,
+				};
+			}
+
+			setDoc(doc(BookRef, userName ? userName : "Empty"), {
+				books: [bookId],
+			});
+
+			return {
+				message: "Book added to purchases successfully!",
+				status: 200,
+			};
+		}
+	);
+
+	return res;
+}
