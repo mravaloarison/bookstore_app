@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+const genAI = new GoogleGenerativeAI("AIzaSyDzaET4jXErsqTamdQCdPvPvxWbs2Fjm6k");
 
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
