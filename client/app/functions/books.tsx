@@ -33,3 +33,15 @@ export function searchBooks(searchValue: string) {
 		}
 	});
 }
+
+export function getBooksById(bookIds: string) {
+	const requests = `https://www.googleapis.com/books/v1/volumes/${bookIds}`;
+
+	return fetch(requests).then((responses) => {
+		if (responses.ok) {
+			return responses.json().then((data) => {
+				return data;
+			});
+		}
+	});
+}

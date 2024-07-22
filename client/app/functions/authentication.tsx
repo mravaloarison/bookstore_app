@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+	getAuth,
+	signInWithPopup,
+	GoogleAuthProvider,
+	reload,
+} from "firebase/auth";
 import {
 	getFirestore,
 	addDoc,
@@ -9,6 +14,7 @@ import {
 	setDoc,
 	doc,
 	getDoc,
+	QuerySnapshot,
 } from "firebase/firestore";
 import { conf } from "./firebase_config";
 
@@ -277,16 +283,17 @@ export function addToPurchase(bookId: string, userName: string | null) {
 }
 
 export function getFavorites(userName: string | null) {
-	let res: any[] = [];
-	getDocs(collection(db, "favorites")).then((querySnapshot) => {
-		querySnapshot.forEach((doc) => {
-			if (doc.id === userName) {
-				res = doc.data().books;
-			}
-		});
-	});
+	const BookRef: any = collection(db, "favorites");
 
-	return res;
+	return getDoc(doc(BookRef, userName ? userName : "Empty")).then(
+		(docSnap: any) => {
+			if (docSnap.exists()) {
+				return docSnap.data().books;
+			}
+
+			return [];
+		}
+	);
 }
 
 export function getPurchases(userName: string | null) {
@@ -300,4 +307,24 @@ export function getPurchases(userName: string | null) {
 	});
 
 	return res;
+}
+
+export function removeFromFavorites(bookId: string, userName: string | null) {
+	const BookRef: any = collection(db, "favorites");
+
+	getDoc(doc(BookRef, userName ? userName : "Empty")).then((docSnap: any) => {
+		if (docSnap.exists()) {
+			const booksInUserFavorites = docSnap.data().books;
+
+			const newBooks = booksInUserFavorites.filter(
+				(book: string) => book !== bookId
+			);
+
+			setDoc(doc(BookRef, userName ? userName : "Empty"), {
+				books: newBooks,
+			}).then(() => {
+				window.location.reload();
+			});
+		}
+	});
 }
