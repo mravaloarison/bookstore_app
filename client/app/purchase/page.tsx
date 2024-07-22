@@ -31,7 +31,6 @@ const UserPurchaseItem = ({
 
 				<div className="flex flex-col gap-1 ">
 					<p className="font-semibold truncate w-96">{bookName}</p>
-					<p className="text-sm text-slate-300">Authors name</p>
 				</div>
 			</div>
 			<p className="font-semibold text-sm">${price}</p>
