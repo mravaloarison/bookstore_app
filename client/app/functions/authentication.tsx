@@ -297,16 +297,17 @@ export function getFavorites(userName: string | null) {
 }
 
 export function getPurchases(userName: string | null) {
-	let res: any[] = [];
-	getDocs(collection(db, "purchases")).then((querySnapshot) => {
-		querySnapshot.forEach((doc) => {
-			if (doc.id === userName) {
-				res = doc.data().books;
-			}
-		});
-	});
+	const BookRef: any = collection(db, "purchases");
 
-	return res;
+	return getDoc(doc(BookRef, userName ? userName : "Empty")).then(
+		(docSnap: any) => {
+			if (docSnap.exists()) {
+				return docSnap.data().books;
+			}
+
+			return [];
+		}
+	);
 }
 
 export function removeFromFavorites(bookId: string, userName: string | null) {
@@ -317,6 +318,26 @@ export function removeFromFavorites(bookId: string, userName: string | null) {
 			const booksInUserFavorites = docSnap.data().books;
 
 			const newBooks = booksInUserFavorites.filter(
+				(book: string) => book !== bookId
+			);
+
+			setDoc(doc(BookRef, userName ? userName : "Empty"), {
+				books: newBooks,
+			}).then(() => {
+				window.location.reload();
+			});
+		}
+	});
+}
+
+export function removeFromPurchases(bookId: string, userName: string | null) {
+	const BookRef: any = collection(db, "purchases");
+
+	getDoc(doc(BookRef, userName ? userName : "Empty")).then((docSnap: any) => {
+		if (docSnap.exists()) {
+			const booksInUserPurchases = docSnap.data().books;
+
+			const newBooks = booksInUserPurchases.filter(
 				(book: string) => book !== bookId
 			);
 

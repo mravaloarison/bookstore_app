@@ -2,24 +2,23 @@
 
 import { useEffect, useState } from "react";
 import MustSignIn from "@/components/homemade/must_sign_in";
+import { getPurchases } from "../functions/authentication";
+import { getBooksById } from "../functions/books";
 
 interface UserPurchaseItemProps {
 	imgLink: string;
 	bookName: string;
 	price: string;
-	purchaseDate: string;
 }
 
 const UserPurchaseItem = ({
 	imgLink,
 	bookName,
 	price,
-	purchaseDate,
 }: {
 	imgLink: string;
 	bookName: string;
 	price: string;
-	purchaseDate: string;
 }) => {
 	return (
 		<div className="flex justify-between items-center w-full border-b py-4">
@@ -30,9 +29,9 @@ const UserPurchaseItem = ({
 					className="w-16 h-16 rounded-lg"
 				/>
 
-				<div className="flex flex-col gap-1">
-					<p className="font-semibold">{bookName}</p>
-					<p className="text-xs font-light">{purchaseDate}</p>
+				<div className="flex flex-col gap-1 ">
+					<p className="font-semibold truncate w-96">{bookName}</p>
+					<p className="text-sm text-slate-300">Authors name</p>
 				</div>
 			</div>
 			<p className="font-semibold text-sm">${price}</p>
@@ -45,6 +44,7 @@ export default function PurchasePage() {
 	const [listOfPurchase, setListOfPurchase] = useState<
 		UserPurchaseItemProps[] | []
 	>([]);
+	const [totalExpenses, setTotalExpenses] = useState(0);
 
 	useEffect(() => {
 		const username = sessionStorage.getItem("user");
@@ -52,6 +52,30 @@ export default function PurchasePage() {
 			setUsername(username);
 		}
 	});
+
+	useEffect(() => {
+		getPurchases(username).then((purchases: any) => {
+			purchases.forEach((purchaseId: string) => {
+				getBooksById(purchaseId).then((books: any) => {
+					setListOfPurchase((prevPurchases: any) => [
+						...prevPurchases,
+						{
+							imgLink: books.volumeInfo.imageLinks.thumbnail,
+							bookName: books.volumeInfo.title,
+							price: books.saleInfo.listPrice.amount,
+						},
+					]);
+
+					setTotalExpenses((prevTotalExpenses) => {
+						return (
+							prevTotalExpenses +
+							parseFloat(books.saleInfo.listPrice.amount)
+						);
+					});
+				});
+			});
+		});
+	}, [username]);
 
 	return (
 		<>
@@ -69,17 +93,25 @@ export default function PurchasePage() {
 							</div>
 						</>
 					) : (
-						<div className="w-full flex flex-col ">
-							{listOfPurchase?.map((purchase) => (
-								<UserPurchaseItem
-									key={purchase.bookName}
-									imgLink={purchase.imgLink}
-									bookName={purchase.bookName}
-									price={purchase.price}
-									purchaseDate={purchase.purchaseDate}
-								/>
-							))}
-						</div>
+						<>
+							<p className="p-8 font-semibold text-xl text-center">
+								Your purchase history
+							</p>
+							<div className="w-full flex flex-col ">
+								{listOfPurchase?.map((purchase) => (
+									<UserPurchaseItem
+										key={purchase.bookName}
+										imgLink={purchase.imgLink}
+										bookName={purchase.bookName}
+										price={purchase.price}
+									/>
+								))}
+							</div>
+							<p className="font-semibold text-center p-8">
+								Your total expenses on books: $
+								{totalExpenses.toFixed(2)}
+							</p>
+						</>
 					)}
 				</div>
 			)}
