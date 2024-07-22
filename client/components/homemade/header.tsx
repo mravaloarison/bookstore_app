@@ -47,11 +47,8 @@ export default function Header() {
 			<div className="flex gap-8 items-center">
 				{isLoggedIn ? (
 					<div>
-						<div className="lg:flex bg-muted/40 hidden">
+						<div className="flex bg-muted/40">
 							<SignedInIcon />
-						</div>
-						<div className="lg:hidden flex">
-							<Menu />
 						</div>
 					</div>
 				) : (

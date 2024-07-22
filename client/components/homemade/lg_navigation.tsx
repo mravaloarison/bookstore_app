@@ -39,11 +39,6 @@ const menuItems = [
 		path: "/ai_recommendations",
 	},
 	{
-		icon: MessageSquareWarning,
-		text: "Reports",
-		path: "/reports",
-	},
-	{
 		icon: Crown,
 		text: "Membership",
 		path: "/membership",
